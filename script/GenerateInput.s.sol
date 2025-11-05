@@ -13,13 +13,13 @@ contract GenerateInput is Script {
         types[0] = "address";
         types[1] = "uint";
 
-        uint256 amount = 2500 * 1e18;
+        uint256 amount = 25 * 1e18;
 
         address[] memory whitelist = new address[](4);
-        whitelist[0] = 0x6CA6d1e2D5347Bfab1d91e883F1915560e09129D;
-        whitelist[1] = 0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B; // Example addresses
-        whitelist[2] = 0x1Db3439a222C519ab44bb1144fC28167b4Fa6EE6;
-        whitelist[3] = 0x0e466e7519A469f20168796a0807b758a2339791;
+        whitelist[0] = 0x6CA6d1e2D5347Bfab1d91e883F1915560e09129D; // Test address
+        whitelist[1] = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266; // Example addresses
+        whitelist[2] = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
+        whitelist[3] = 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC;
 
         string memory json = createJson(types, amount, whitelist);
         vm.writeFile(FILE_PATH, json);
@@ -66,7 +66,7 @@ contract GenerateInput is Script {
                 json = string.concat(json, ",");
             }
         }
-        
+
         json = string.concat(json, "}}");
 
         return json;
