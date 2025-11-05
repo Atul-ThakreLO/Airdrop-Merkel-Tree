@@ -29,24 +29,21 @@
 
 # forge script script/Interact.s.sol/Claim --rpc-url http://localhost:8545 --private-key 0xdbda1821b80551c9d65939329250298aa3472ba22feea921c0cf5d620ea67b97 --broadcast
 
-# Configuration
+
 AIRDROP_ADDRESS="0xA15BB66138824a1c7167f5E85b957d04Dd34E468"
 AMOUNT=25000000000000000000
 
 echo "=== Airdrop Claim Script ==="
 echo
 
-# Step 1: Get user address
 echo "Enter claimer address:"
 read USER
 
-# Step 2: Fetch message hash
 echo "Fetching message hash..."
 DIGEST=$(cast call $AIRDROP_ADDRESS "getMessageHash(address,uint256)" $USER $AMOUNT --rpc-url http://localhost:8545)
 echo "✓ Digest: $DIGEST"
 echo
 
-# Step 3: Sign the message
 echo "Enter private key:"
 read -s PRIVATE_KEY
 echo
@@ -56,7 +53,6 @@ SIGNATURE=$(cast wallet sign --no-hash $DIGEST --private-key $PRIVATE_KEY)
 echo "✓ Signature created"
 echo
 
-# Step 4: Get merkle proofs
 echo "Enter proof 1:"
 read PROOF1
 
@@ -65,7 +61,6 @@ read PROOF2
 
 echo
 
-# Step 5: Run forge script (pass variables to Solidity)
 echo "Running claim transaction..."
 
 USER=$USER \

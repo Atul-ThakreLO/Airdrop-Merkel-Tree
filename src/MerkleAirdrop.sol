@@ -36,7 +36,8 @@ import {ECDSA} from "@openzeppelin/utils/cryptography/ECDSA.sol";
  * @notice This airdrop smart contract will use merkle proofs to verify the address.
  */
 contract MerkleAirdrop is EIP712 {
-    using SafeERC20 for IERC20;
+    // Using safeERC20 for to prevent token if transfer is failed.
+    using SafeERC20 for IERC20; /// @dev Recomended by SafeERC20.sol
 
     ////////////////////////////////////////////////////////////
     ////////////////////////// Errors //////////////////////////
@@ -92,6 +93,12 @@ contract MerkleAirdrop is EIP712 {
 
         // Hash it twice for better security.
         bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(account, amount))));
+
+        /**
+         * @notice The verify function will reconstruct the merkle tree with the proof and  leaf 
+         * node and get the root node, then compare it with the provided root (on chain root)
+         * 
+         */
         if (!MerkleProof.verify(merkleProof, i_merkleRoot, leaf)) {
             revert MerkleAirdrop__InvalidProof();
         }
@@ -103,6 +110,10 @@ contract MerkleAirdrop is EIP712 {
         i_airDropToken.safeTransfer(account, amount);
     }
 
+    /**
+     * @notice The signature component v, r and s are derived by using digest and user private key.
+     * and here tryRecover derive public key from diegst and v,r,s by using ECDSA recovery algorthm.
+     */
     function _isValidSignature(address account, bytes32 digest, uint8 _v, bytes32 _r, bytes32 _s) internal pure returns (bool) {
         (address actualSigner, , ) = ECDSA.tryRecover(digest, _v, _r, _s);
         return actualSigner == account;
@@ -112,6 +123,10 @@ contract MerkleAirdrop is EIP712 {
     ///////////////////////// Getters //////////////////////////
     ////////////////////////////////////////////////////////////
 
+    /**
+     * @notice _hashTypedDataV4 from openzeppelin construct the digest i.e hashMessage of
+     * bytes1(0x19), bytes1(0x01), domainSeparator, hashStruct(message)
+     */
     function getMessageHash(address _account, uint256 _amount) public view returns (bytes32) {
         return _hashTypedDataV4(keccak256(abi.encode(MESSAGE_TYPEHASH, AirdropClaim({account: _account, amount: _amount}))));
     }
