@@ -19,6 +19,14 @@ contract Claim is Script {
         vm.stopBroadcast();
     }
 
+    /**
+     * @notice Here we have also option to use vm.sign(digest, privateKey).
+     * But due to security reasons we can't hardcode or keep privateKey in env.
+     * Hence we use 'cast wallet sign --no-hash $DIGEST --private-key $PRIVATE_KEY'
+     * This returns signature i.e @param sig
+     * and function splitSignature function use to split into
+     * @param v, @param r, @param s.
+     */
     function splitSignature(bytes memory sig) public pure returns (uint8 v, bytes32 r, bytes32 s) {
         if(sig.length != 65) {
             revert __Claim_InvalidSignature();

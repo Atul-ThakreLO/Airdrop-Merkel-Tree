@@ -125,7 +125,7 @@ contract MerkleAirdrop is EIP712 {
 
     /**
      * @notice _hashTypedDataV4 from openzeppelin construct the digest i.e hashMessage of
-     * bytes1(0x19), bytes1(0x01), domainSeparator, hashStruct(message)
+     * [bytes1(0x19), bytes1(0x01), domainSeparator, hashStruct(message)] according to EIP-712
      */
     function getMessageHash(address _account, uint256 _amount) public view returns (bytes32) {
         return _hashTypedDataV4(keccak256(abi.encode(MESSAGE_TYPEHASH, AirdropClaim({account: _account, amount: _amount}))));
